@@ -21,7 +21,7 @@ func main() {
 	systemInterrupt := make(chan os.Signal, 1)
 	signal.Notify(systemInterrupt, os.Interrupt)
 
-	server := &http.Server{Addr: ":80", Handler: router}
+	server := &http.Server{Addr: ":8080", Handler: router}
 	go func() {
 		if err := server.ListenAndServe(); err != nil {
 			log.Printf("ListenAndServe: %v\n", err)
