@@ -1,56 +1,71 @@
 APPLICATION=khalifah
 
-DIR_INTERFACE=interface
-DIR_SERVER=server
-DIR_LIBRARY=library
-DIR_BUILD=build
+DIR_INTERFACE=$(PWD)/interface
+DIR_SERVER=$(PWD)/server
+DIR_LIBRARY=$(PWD)/library
+DIR_DATABASE=$(PWD)/database
+DIR_BUILD=$(PWD)/build
 
-INTERFACE_FILES=$(shell find $(DIR_INTERFACE)/src) $(shell find $(DIR_INTERFACE)/public)
-INTERFACE_BUILD=build
 SERVER_FILES=$(shell find $(DIR_SERVER))
 
-TEST=$(APPLICATION)_test
-TARGET=$(APPLICATION)
-STATIC=static
+WEBROOT=webroot
+DB=data.db
+
+# local platform
+LOCAL_TAG=LOCAL
+LOCAL_ARCH=amd64
+LOCAL_OS=linux
+LOCAL_CC=gcc
+LOCAL_CXX=g++
+LOCAL_AR=ar
+LOCAL_EXECUTABLE=$(APPLICATION)_test
+
+# target platform
+TARGET_TAG=TARGET
+TARGET_ARCH=arm
+TARGET_OS=linux
+TARGET_CC=arm-linux-gnueabihf-gcc
+TARGET_CXX=arm-linux-gnueabihf-g++
+TARGET_AR=arm-linux-gnueabihf-ar
+TARGET_EXECUTABLE=$(APPLICATION)
+
+ifneq (PLATFORM, TARGET_TAG)
+override PLATFORM=LOCAL
+endif
+
+export ARCH=$($(PLATFORM)_ARCH)
+export OS=$($(PLATFORM)_OS)
+export CC=$($(PLATFORM)_CC)
+export CXX=$($(PLATFORM)_CXX)
+export AR=$($(PLATFORM)_AR)
+export EXECUTABLE=$($(PLATFORM)_EXECUTABLE)
 
 all: build
 
 run:
-	$(MAKE) FOR=test
-	cd $(DIR_BUILD) && ./$(TEST)
-
-build:
-ifeq ($(FOR), target)
-	$(MAKE) $(DIR_BUILD)/$(TARGET)
-else ifeq ($(FOR), test)
-	$(MAKE) $(DIR_BUILD)/$(TEST)
+ifneq ($(PLATFORM), LOCAL)
+	$(MAKE) run PLATFORM=LOCAL
 else
-	@echo Build for whom? \(FOR=target/test\)
-	@exit 1
+	$(MAKE) build PLATFORM=$(PLATFORM)
+	cd $(DIR_BUILD) && ./$(EXECUTABLE)
 endif
-	$(MAKE) $(DIR_BUILD)/$(STATIC)
 
-$(DIR_BUILD)/$(STATIC): $(INTERFACE_FILES)
-	if [ ! -d $(DIR_BUILD) ]; then mkdir $(DIR_BUILD); fi
-	cd $(DIR_INTERFACE) && npm run build
-	mv $(DIR_INTERFACE)/build $(DIR_BUILD)/$(STATIC)
+build: $(DIR_BUILD)/$(EXECUTABLE) $(DIR_BUILD)/$(WEBROOT) $(DIR_BUILD)/$(DB)
 
-$(DIR_BUILD)/$(TEST): $(SERVER_FILES)
+$(DIR_BUILD)/$(WEBROOT): $(INTERFACE_FILES)
 	if [ ! -d $(DIR_BUILD) ]; then mkdir $(DIR_BUILD); fi
-	go build -C $(DIR_SERVER) -o $$PWD/$(DIR_BUILD)/$(TEST)
+	cd $(DIR_INTERFACE) && $(MAKE) TARGET=$(DIR_BUILD)/$(WEBROOT)
 
-$(DIR_BUILD)/$(TARGET): $(SERVER_FILES)
+$(DIR_BUILD)/$(EXECUTABLE): $(SERVER_FILES)
 	if [ ! -d $(DIR_BUILD) ]; then mkdir $(DIR_BUILD); fi
-	GOARCH=arm \
-	GOARM=7 \
-	GOOS=linux \
-	CGO_ENABLED=1 \
-	CC=arm-linux-gnueabihf-gcc \
-	CXX=arm-linux-gnueabihf-g++ \
-	AR=arm-linux-gnueabihf-ar \
-	go build -C $(DIR_SERVER) -o $$PWD/$(DIR_BUILD)/$(TARGET)
+	cd $(DIR_SERVER) && $(MAKE) TARGET=$(DIR_BUILD)/$(EXECUTABLE)
+
+$(DIR_BUILD)/$(DB):
+	if [ ! -d $(DIR_BUILD) ]; then mkdir $(DIR_BUILD); fi
+	cd $(DIR_DATABASE) && $(MAKE) TARGET=$(DIR_BUILD)/$(DB)
 
 clean:
 	rm -rf $(DIR_BUILD)
+	cd $(DIR_DATABASE) && $(MAKE) clean
 
-.PHONY: clean run build
+.PHONY: clean run build db
