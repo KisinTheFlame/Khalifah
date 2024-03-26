@@ -1,49 +1,38 @@
 package service
 
 import (
-	"database/sql"
-	"fmt"
-	"log"
 	"net/http"
 
+	"github.com/KisinTheFlame/khalifah/server/model/dto"
+	"github.com/KisinTheFlame/khalifah/server/utils/jsonutils"
 	"github.com/gorilla/mux"
-	_ "github.com/mattn/go-sqlite3"
 )
 
-type UserService struct {
-}
+type UserService struct{}
 
 var userService *UserService = &UserService{}
 
 func (service *UserService) register(router *mux.Router) {
-	router.HandleFunc("/sqltest", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintln(w, service.sqlTest())
+	router = router.PathPrefix("/user").Subrouter()
+
+	router.Methods("POST").Path("/register").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		request := jsonutils.GetJsonBody[dto.UserRegister](r)
+		service.registerUser(request)
+	})
+	router.Methods("POST").Path("/login").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		request := jsonutils.GetJsonBody[dto.UserLogin](r)
+		service.loginUser(w, request)
 	})
 }
 
-func (service *UserService) sqlTest() string {
-	db, err := sql.Open("sqlite3", "data.db")
-	if err != nil {
-		log.Printf("init: %v\n", err)
-	}
-	defer db.Close()
-	var version string
-	if err := db.QueryRow("SELECT SQLITE_VERSION()").Scan(&version); err != nil {
-		log.Printf("init: %v\n", err)
-	}
-	return version
-}
-
-func (service *UserService) registerUser() {
+func (service *UserService) registerUser(request *dto.UserRegister) {
 
 }
 
-func (service *UserService) loginUser() {
-
+func (service *UserService) loginUser(w http.ResponseWriter, request *dto.UserLogin) {
 }
 
 func (service *UserService) changePassword() {
-
 }
 
 func init() {

@@ -4,36 +4,36 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/KisinTheFlame/khalifah/server/utils/slice"
+	"github.com/KisinTheFlame/khalifah/server/utils/sliceutils"
 )
 
 func TestEqual(t *testing.T) {
-	if !slice.Equal([]int{1, 2, 3}, []int{1, 2, 3}) {
+	if !sliceutils.Equal([]int{1, 2, 3}, []int{1, 2, 3}) {
 		t.Fail()
 	}
-	if !slice.Equal([]int{}, []int{}) {
+	if !sliceutils.Equal([]int{}, []int{}) {
 		t.Fail()
 	}
-	if !slice.Equal[int](nil, nil) {
+	if !sliceutils.Equal[int](nil, nil) {
 		t.Fail()
 	}
-	if slice.Equal([]int{1, 2, 3}, []int{1, 2, 4}) {
+	if sliceutils.Equal([]int{1, 2, 3}, []int{1, 2, 4}) {
 		t.Fail()
 	}
-	if slice.Equal([]int{1, 2, 3}, []int{1, 2}) {
+	if sliceutils.Equal([]int{1, 2, 3}, []int{1, 2}) {
 		t.Fail()
 	}
-	if slice.Equal([]int{1, 2, 3}, nil) {
+	if sliceutils.Equal([]int{1, 2, 3}, nil) {
 		t.Fail()
 	}
-	if slice.Equal([]int{}, nil) {
+	if sliceutils.Equal([]int{}, nil) {
 		t.Fail()
 	}
 }
 
 func TestMap(t *testing.T) {
-	s := slice.Map([]int{1, 2, 3}, func(x int) string { return fmt.Sprint(x) })
-	if !slice.Equal(s, []string{"1", "2", "3"}) {
+	s := sliceutils.Map([]int{1, 2, 3}, func(x int) string { return fmt.Sprint(x) })
+	if !sliceutils.Equal(s, []string{"1", "2", "3"}) {
 		t.Fail()
 	}
 }
