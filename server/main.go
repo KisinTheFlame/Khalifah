@@ -14,9 +14,9 @@ import (
 func main() {
 	router := mux.NewRouter()
 
-	service.RegisterService(router)
+	service.RegisterService(router.PathPrefix("/api").Subrouter())
 
-	router.PathPrefix("/").Handler(http.StripPrefix("/", http.FileServer(http.Dir("./static"))))
+	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./webroot")))
 
 	systemInterrupt := make(chan os.Signal, 1)
 	signal.Notify(systemInterrupt, os.Interrupt)
