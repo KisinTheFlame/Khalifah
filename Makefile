@@ -50,15 +50,21 @@ else
 	cd $(DIR_BUILD) && ./$(EXECUTABLE)
 endif
 
-build: $(DIR_BUILD)/$(EXECUTABLE) $(DIR_BUILD)/$(WEBROOT) $(DIR_BUILD)/$(DB)
+build: build_interface build_server build_db
+
+build_interface: $(DIR_BUILD)/$(WEBROOT)
 
 $(DIR_BUILD)/$(WEBROOT): $(INTERFACE_FILES)
 	if [ ! -d $(DIR_BUILD) ]; then mkdir $(DIR_BUILD); fi
 	cd $(DIR_INTERFACE) && $(MAKE) TARGET=$(DIR_BUILD)/$(WEBROOT)
 
+build_server: $(DIR_BUILD)/$(EXECUTABLE)
+
 $(DIR_BUILD)/$(EXECUTABLE): $(SERVER_FILES)
 	if [ ! -d $(DIR_BUILD) ]; then mkdir $(DIR_BUILD); fi
 	cd $(DIR_SERVER) && $(MAKE) TARGET=$(DIR_BUILD)/$(EXECUTABLE)
+
+build_db: $(DIR_BUILD)/$(DB)
 
 $(DIR_BUILD)/$(DB):
 	if [ ! -d $(DIR_BUILD) ]; then mkdir $(DIR_BUILD); fi
@@ -66,6 +72,7 @@ $(DIR_BUILD)/$(DB):
 
 clean:
 	rm -rf $(DIR_BUILD)
+	cd $(DIR_INTERFACE) && $(MAKE) clean
 	cd $(DIR_DATABASE) && $(MAKE) clean
 
 .PHONY: clean run build db
