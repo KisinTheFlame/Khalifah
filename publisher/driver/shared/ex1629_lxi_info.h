@@ -1,0 +1,3 @@
+#define EX1629_LXI_VERSION "1.0"
+#define EX1629_LXI_CLASS "C"
+

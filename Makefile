@@ -4,12 +4,14 @@ DIR_INTERFACE=$(PWD)/interface
 DIR_SERVER=$(PWD)/server
 DIR_LIBRARY=$(PWD)/library
 DIR_DATABASE=$(PWD)/database
+DIR_PUBLISHER=$(PWD)/publisher
 DIR_BUILD=$(PWD)/build
 
 SERVER_FILES=$(shell find $(DIR_SERVER))
 
 WEBROOT=webroot
 DB=data.db
+PUBLISHER=publisher
 
 # local platform
 LOCAL_TAG=LOCAL
@@ -30,7 +32,7 @@ TARGET_AR=arm-linux-gnueabihf-ar
 TARGET_EXECUTABLE=$(APPLICATION)
 
 ifneq (PLATFORM, TARGET_TAG)
-override PLATFORM=LOCAL
+override PLATFORM=$(LOCAL_TAG)
 endif
 
 export ARCH=$($(PLATFORM)_ARCH)
@@ -42,37 +44,49 @@ export EXECUTABLE=$($(PLATFORM)_EXECUTABLE)
 
 all: build
 
+.PHONY: run
 run:
-ifneq ($(PLATFORM), LOCAL)
-	$(MAKE) run PLATFORM=LOCAL
+ifneq ($(PLATFORM), $(LOCAL_TAG))
+	$(MAKE) run PLATFORM=$(LOCAL_TAG)
 else
 	$(MAKE) build PLATFORM=$(PLATFORM)
 	cd $(DIR_BUILD) && ./$(EXECUTABLE)
 endif
 
-build: build_interface build_server build_db
+.PHONY: build
+build: build_interface build_server build_db build_publisher
 
+.PHONY: build_interface
 build_interface: $(DIR_BUILD)/$(WEBROOT)
 
 $(DIR_BUILD)/$(WEBROOT): $(INTERFACE_FILES)
 	if [ ! -d $(DIR_BUILD) ]; then mkdir $(DIR_BUILD); fi
-	cd $(DIR_INTERFACE) && $(MAKE) TARGET=$(DIR_BUILD)/$(WEBROOT)
+	cd $(DIR_INTERFACE) && $(MAKE) TARGET=$@
 
+.PHONY: build_server
 build_server: $(DIR_BUILD)/$(EXECUTABLE)
 
 $(DIR_BUILD)/$(EXECUTABLE): $(SERVER_FILES)
 	if [ ! -d $(DIR_BUILD) ]; then mkdir $(DIR_BUILD); fi
-	cd $(DIR_SERVER) && $(MAKE) TARGET=$(DIR_BUILD)/$(EXECUTABLE)
+	cd $(DIR_SERVER) && $(MAKE) TARGET=$@
 
+.PHONY: build_db
 build_db: $(DIR_BUILD)/$(DB)
 
 $(DIR_BUILD)/$(DB):
 	if [ ! -d $(DIR_BUILD) ]; then mkdir $(DIR_BUILD); fi
-	cd $(DIR_DATABASE) && $(MAKE) TARGET=$(DIR_BUILD)/$(DB)
+	cd $(DIR_DATABASE) && $(MAKE) TARGET=$@
 
+.PHONY: build_publisher
+build_publisher: $(DIR_BUILD)/$(PUBLISHER)
+
+$(DIR_BUILD)/$(PUBLISHER):
+	if [ ! -d $(DIR_BUILD) ]; then mkdir $(DIR_BUILD); fi
+	cd $(DIR_PUBLISHER) && $(MAKE) TARGET=$@
+
+.PHONY: clean
 clean:
 	rm -rf $(DIR_BUILD)
 	cd $(DIR_INTERFACE) && $(MAKE) clean
 	cd $(DIR_DATABASE) && $(MAKE) clean
-
-.PHONY: clean run build db
+	cd $(DIR_PUBLISHER) && $(MAKE) clean
