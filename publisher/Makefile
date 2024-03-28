@@ -13,13 +13,13 @@ TEST_OBJ=$(patsubst %.c, %.o, $(TEST))
 
 APP_TARGET=main
 
-CFLAGS= -Wall -std=c11 -c -g -I$(DIR_INC) -I/usr/include/tirpc -I$(DIR_DRIVER)/shared -I$(DIR_DRIVER)/libex1629
+CFLAGS= -Wall -std=c11 -c -g -I$(DIR_INC) -I$(DIR_DRIVER)/shared -I$(DIR_DRIVER)/libex1629
 LDFLAGS= -lm -L$(DIR_DRIVER)/libex1629 -lex1629
 
 all: $(TARGET)
 
 $(TARGET): $(DIR_APP)/$(APP_TARGET).o $(OBJ)
-	$(CC) $(LDFLAGS) $(DIR_APP)/$(APP_TARGET).o $(OBJ) -o $@
+	$(CC) $(DIR_APP)/$(APP_TARGET).o $(OBJ) -o $@ $(LDFLAGS)
 
 .PHONY: test
 test: $(if $(case), $(DIR_TEST)/test-$(case).o, $(TEST_OBJ)) $(OBJ)
