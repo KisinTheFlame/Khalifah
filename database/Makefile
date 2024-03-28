@@ -1,9 +1,9 @@
 DIR_SRC=sqlite3_src
 SRC=$(shell find $(DIR_SRC) -name "*.c")
 
-ifeq ($(origin CC), default)
-CC=gcc
-CXX=g++
+ifeq ($(origin LOCAL_CC), undefined)
+LOCAL_CC=gcc
+LOCAL_CXX=g++
 endif
 
 SQLITE3=./sqlite3
@@ -19,7 +19,7 @@ $(TARGET): $(SQLITE3) init.sql
 	$(SQLITE3) $(TARGET) < $(SQL_FILE)
 
 $(SQLITE3): $(SRC)
-	$(CC) $(SRC) $(CFLAGS) -o $(SQLITE3)
+	$(LOCAL_CC) $(SRC) $(CFLAGS) -o $(SQLITE3)
 
 clean:
 	rm -f sqlite3

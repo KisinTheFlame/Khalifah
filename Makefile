@@ -14,24 +14,24 @@ DB=data.db
 PUBLISHER=publisher
 
 # local platform
-LOCAL_TAG=LOCAL
-LOCAL_ARCH=amd64
-LOCAL_OS=linux
-LOCAL_CC=gcc
-LOCAL_CXX=g++
-LOCAL_AR=ar
-LOCAL_EXECUTABLE=$(APPLICATION)_test
+export LOCAL_TAG=LOCAL
+export LOCAL_ARCH=amd64
+export LOCAL_OS=linux
+export LOCAL_CC=gcc
+export LOCAL_CXX=g++
+export LOCAL_AR=ar
+export LOCAL_EXECUTABLE=$(APPLICATION)_test
 
-# target platform
-TARGET_TAG=TARGET
-TARGET_ARCH=arm
-TARGET_OS=linux
-TARGET_CC=arm-linux-gnueabihf-gcc
-TARGET_CXX=arm-linux-gnueabihf-g++
-TARGET_AR=arm-linux-gnueabihf-ar
-TARGET_EXECUTABLE=$(APPLICATION)
+# arm platform
+export ARM_TAG=ARM
+export ARM_ARCH=arm
+export ARM_OS=linux
+export ARM_CC=arm-linux-gnueabihf-gcc
+export ARM_CXX=arm-linux-gnueabihf-g++
+export ARM_AR=arm-linux-gnueabihf-ar
+export ARM_EXECUTABLE=$(APPLICATION)
 
-ifneq (PLATFORM, TARGET_TAG)
+ifneq ($(PLATFORM), $(ARM_TAG))
 override PLATFORM=$(LOCAL_TAG)
 endif
 
