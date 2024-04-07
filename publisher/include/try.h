@@ -15,8 +15,8 @@
     do { \
         ex1629_result_t r = (ex1629_call); \
         if (r != 0) { \
-            printf("error code: %d\n", r); \
-            return r; \
+            printf("error code: %d\n", (int) r); \
+            return (int) r; \
         } \
     } while (0)
 
