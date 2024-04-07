@@ -14,7 +14,7 @@ TEST_OBJ=$(patsubst %.c, %.o, $(TEST))
 APP_TARGET=main
 
 CFLAGS= -Wall -std=c11 -c -g -I$(DIR_INC) -I$(DIR_DRIVER)/shared -I$(DIR_DRIVER)/libex1629
-LDFLAGS= -lm -L$(DIR_DRIVER)/libex1629 -lex1629
+LDFLAGS= -lm -L$(DIR_DRIVER)/libex1629 -lex1629 -lpthread
 
 all: $(TARGET)
 
