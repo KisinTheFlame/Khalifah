@@ -1,11 +1,11 @@
 #include <libex1629.h>
+#include <pthread.h>
 #include <semaphore.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/socket.h>
-#include <threads.h>
 #include <unistd.h>
 
 #include "net_utils.h"
@@ -44,12 +44,12 @@ static void server_start(const Server *server) {
     while (true) {
         int connection_fd = accept(server->socket_fd, &addr, sizeof(addr));
         // todo: start a thread.
-        thrd_t thread;
         ConnectionArgs *connectionArgs =
             (ConnectionArgs *)malloc(sizeof(ConnectionArgs));
         connectionArgs->client = server->client;
         connectionArgs->connection_fd = connection_fd;
-        thrd_create(&thread, handle, connectionArgs);
+        pthread_t thread;
+        pthread_create(&thread, NULL, handle, connectionArgs);
     }
 }
 
