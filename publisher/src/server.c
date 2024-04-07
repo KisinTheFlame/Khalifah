@@ -15,6 +15,27 @@ typedef struct {
     int connection_fd;
 } ConnectionArgs;
 
+static int handle(ConnectionArgs *args) {
+    EX1629_CLIENT *client = args->client;
+    int connection_fd = args->connection_fd;
+    char prefix[255];
+    int major;
+    int minor;
+    int build;
+    ex1629_try(
+        libex1629_get_firmware_version(client, prefix, &major, &minor, &build)
+    );
+    printf(
+        "EX1629 Firmware Version: %s.%d.%d.%d\n", prefix, major, minor, build
+    );
+    send_string(connection_fd, prefix);
+    send_uint32(connection_fd, major);
+    send_uint32(connection_fd, minor);
+    send_uint32(connection_fd, build);
+    free(args);
+    return 0;
+}
+
 Server *server_new(const char *host) {
     EX1629_CLIENT *client = client_new(host);
     int socket_fd = socket(AF_INET, SOCK_STREAM, 0);
@@ -42,25 +63,4 @@ void server_start(const Server *server, uint32_t port) {
         pthread_t thread;
         pthread_create(&thread, NULL, handle, connectionArgs);
     }
-}
-
-static int handle(ConnectionArgs *args) {
-    EX1629_CLIENT *client = args->client;
-    int connection_fd = args->connection_fd;
-    char prefix[255];
-    int major;
-    int minor;
-    int build;
-    ex1629_try(
-        libex1629_get_firmware_version(client, prefix, &major, &minor, &build)
-    );
-    printf(
-        "EX1629 Firmware Version: %s.%d.%d.%d\n", prefix, major, minor, build
-    );
-    send_string(connection_fd, prefix);
-    send_uint32(connection_fd, major);
-    send_uint32(connection_fd, minor);
-    send_uint32(connection_fd, build);
-    free(args);
-    return 0;
 }
