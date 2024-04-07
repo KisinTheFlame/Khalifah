@@ -3,6 +3,8 @@
 #include <string.h>
 #include <sys/socket.h>
 
+#include "try.h"
+
 int send_string(int connection_fd, char *s) {
     uint32_t len = strlen(s);
     try(send_uint32(connection_fd, len));
