@@ -94,27 +94,6 @@ static int handle(ConnectionArgs *args) {
     return 0;
 }
 
-static int send_string(int connection_fd, char *s) {
-    uint32_t len = strlen(s);
-    try(send_uint32(connection_fd, len));
-    int result = send(connection_fd, s, len, NULL);
-    if (result > 0) {
-        return 0;
-    } else {
-        return result;
-    }
-}
-
-static int send_uint32(int connection_fd, uint32_t x) {
-    uint32_t conv = htonl(x);
-    int result = send(connection_fd, &conv, sizeof(conv), NULL);
-    if (result > 0) {
-        return 0;
-    } else {
-        return result;
-    }
-}
-
 static int client_new_example() {
     EX1629_CLIENT *client = NULL;
     client = ex1629_clnt_create(HOST, LID_NONE);
