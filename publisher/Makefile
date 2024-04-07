@@ -42,7 +42,7 @@ else
 endif
 
 %.o: %.c $(INC) $(LIBPATH)/lib$(LIBNAME).a
-	$(CC) $(CFLAGS) $< -o $@
+	$(CC) $(LDFLAGS) $(CFLAGS) $< -o $@
 
 $(LIBPATH)/lib$(LIBNAME).a:
 	cd $(DIR_DRIVER) && $(MAKE)
