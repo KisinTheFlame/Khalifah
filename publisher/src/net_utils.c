@@ -22,7 +22,7 @@ int send_uint32(int connection_fd, uint32_t x) {
 
 int receive_string(int connection_fd, char *s, uint32_t *len) {
     try(receive_uint32(connection_fd, len));
-    for (int i = 0; i < len; i++) {
+    for (int i = 0, l = *len; i < l; i++) {
         try(receive_byte(connection_fd, (uint8_t *)(s + i)));
     }
     return 0;
