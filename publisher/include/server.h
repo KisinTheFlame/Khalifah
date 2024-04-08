@@ -9,6 +9,6 @@ typedef struct {
 } Server;
 
 Server *server_new(const char *host);
-void server_start(const Server *server, uint32_t port);
+int server_start(const Server *server, uint32_t port);
 
 #endif
