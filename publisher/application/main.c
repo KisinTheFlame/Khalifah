@@ -1,7 +1,7 @@
+#include <stdio.h>
+
 #include "server.h"
 #include "try.h"
-
-const char *HOST = "172.21.12.246";
 
 const int PORT = 3000;
 

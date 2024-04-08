@@ -1,11 +1,14 @@
 #include <libex1629.h>
+#include <stdio.h>
 
 #include "client.h"
 #include "try.h"
 
 int client_new(EX1629_CLIENT **client, const char *host) {
+    printf("instrument connecting.\n");
     EX1629_CLIENT *cl = ex1629_clnt_create(host, LID_NONE);
     panic_on(cl == NULL);
+    printf("instrument connected.\n");
 
     ex1629_try(libex1629_exreset(cl));
     int num_chs = 48;

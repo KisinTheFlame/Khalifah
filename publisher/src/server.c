@@ -31,6 +31,7 @@ int server_new(Server **server, const char *host) {
     sv->client = client;
     sv->socket_fd = socket_fd;
     *server = sv;
+    printf("server built.\n");
     return 0;
 }
 
@@ -42,6 +43,7 @@ int server_start(const Server *server, uint32_t port) {
     socklen_t addr_size = sizeof(addr);
     bind(server->socket_fd, (struct sockaddr *)&addr, sizeof(addr));
     try(listen(server->socket_fd, 3));
+    printf("listening.\n");
     while (true) {
         int connection_fd =
             accept(server->socket_fd, (struct sockaddr *)&addr, &addr_size);
@@ -65,6 +67,7 @@ static void *handle_entry(void *arg) {
 }
 
 static int handle(ConnectionArgs *args) {
+    printf("handling new connection.\n");
     EX1629_CLIENT *client = args->client;
     int connection_fd = args->connection_fd;
     char prefix[255];
