@@ -5,9 +5,13 @@ const char *HOST = "172.21.12.246";
 
 const int PORT = 3000;
 
-int main() {
-    Server* server = NULL;
-    try(server_new(&server, HOST));
+int main(int argc, char **argv) {
+    if (argc < 2) {
+        printf("need at least host.\n");
+        return 1;
+    }
+    Server *server = NULL;
+    try(server_new(&server, argv[1]));
     try(server_start(server, PORT));
     return 0;
 }
@@ -52,8 +56,8 @@ int main() {
 //         uint32_t trig_timer_period = 0;
 //         uint32_t init_cont = 0;
 //         libex1629_set_trigger_param(
-//             client, pretrig_sample_count, sample_count, trig_delay, arm_delay,
-//             trig_count, arm_count, trig_timer_period, init_cont
+//             client, pretrig_sample_count, sample_count, trig_delay,
+//             arm_delay, trig_count, arm_count, trig_timer_period, init_cont
 //         );
 
 //         /* Setting up for Voltage Measurement */
@@ -109,9 +113,8 @@ int main() {
 //             int j;
 //             for (j = 0; j < data_count; j++) {
 //                 samples[j] = data->data.data_val[j];
-//                 printf("Channel: %d \t Data: %f \n", scanlist[k], samples[j]);
-//                 k++;
-//                 if (k > nchans) {
+//                 printf("Channel: %d \t Data: %f \n", scanlist[k],
+//                 samples[j]); k++; if (k > nchans) {
 //                     k = 0;
 //                 }
 //             }
