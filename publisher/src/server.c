@@ -85,6 +85,8 @@ static int handle(ConnectionArgs *args) {
     send_uint32(connection_fd, minor);
     send_uint32(connection_fd, build);
     printf("sent.\n");
+
+    shutdown(connection_fd, SHUT_RDWR);
     free(args);
     return 0;
 }
