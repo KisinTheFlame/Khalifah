@@ -73,6 +73,7 @@ $(DIR_BUILD)/$(EXECUTABLE): $(SERVER_FILES)
 .PHONY: build_db
 build_db: $(DIR_BUILD)/$(DB)
 
+.PHONY: $(DIR_BUILD)/$(DB)
 $(DIR_BUILD)/$(DB):
 	if [ ! -d $(DIR_BUILD) ]; then mkdir $(DIR_BUILD); fi
 	cd $(DIR_DATABASE) && $(MAKE) TARGET=$@
@@ -80,6 +81,7 @@ $(DIR_BUILD)/$(DB):
 .PHONY: build_publisher
 build_publisher: $(DIR_BUILD)/$(PUBLISHER)
 
+.PHONY: $(DIR_BUILD)/$(PUBLISHER)
 $(DIR_BUILD)/$(PUBLISHER):
 	if [ ! -d $(DIR_BUILD) ]; then mkdir $(DIR_BUILD); fi
 	cd $(DIR_PUBLISHER) && $(MAKE) TARGET=$@
