@@ -1,11 +1,14 @@
 #include "server.h"
+#include "try.h"
 
 const char *HOST = "172.21.12.246";
 
 const int PORT = 3000;
 
 int main() {
-    server_start(server_new(HOST), PORT);
+    Server* server = NULL;
+    try(server_new(&server, HOST));
+    try(server_start(server, PORT));
     return 0;
 }
 

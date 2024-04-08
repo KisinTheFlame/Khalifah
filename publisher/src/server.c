@@ -20,17 +20,18 @@ typedef struct {
 static void *handle_entry(void *arg);
 static int handle(ConnectionArgs *args);
 
-Server *server_new(const char *host) {
+int server_new(Server **server, const char *host) {
     EX1629_CLIENT *client = NULL;
     try(client_new(&client, host));
 
     int socket_fd = socket(AF_INET, SOCK_STREAM, 0);
     panic_on(socket_fd < 0);
 
-    Server *server = malloc(sizeof(Server));
-    server->client = client;
-    server->socket_fd = socket_fd;
-    return server;
+    Server *sv = (Server *)malloc(sizeof(Server));
+    sv->client = client;
+    sv->socket_fd = socket_fd;
+    *server = sv;
+    return 0;
 }
 
 int server_start(const Server *server, uint32_t port) {
@@ -51,6 +52,7 @@ int server_start(const Server *server, uint32_t port) {
         pthread_t thread;
         pthread_create(&thread, NULL, handle_entry, connectionArgs);
     }
+    return 0;
 }
 
 static void *handle_entry(void *arg) {

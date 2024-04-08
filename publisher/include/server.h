@@ -8,7 +8,7 @@ typedef struct {
     int socket_fd;
 } Server;
 
-Server *server_new(const char *host);
+int server_new(Server **server, const char *host);
 int server_start(const Server *server, uint32_t port);
 
 #endif
