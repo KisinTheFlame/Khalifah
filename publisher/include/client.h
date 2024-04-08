@@ -3,6 +3,6 @@
 
 #include <libex1629.h>
 
-EX1629_CLIENT *client_new(const char *host);
+int client_new(EX1629_CLIENT **client, const char *host);
 
 #endif
